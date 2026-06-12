@@ -17,6 +17,8 @@
     "no-console": "warn",
     "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }]
     ,
+    "react/jsx-uses-react": "off",
+    "react/jsx-uses-vars": "error",
     "quotes": ["warn", "single"]
   }
   ,

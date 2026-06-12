@@ -56,6 +56,10 @@ Desktop view:
 
 ![Desktop view](screenshots/Desktop.png)
 
+Desktop view (alternate):
+
+![Desktop view 2](screenshots/Desktop-2.png)
+
 Mobile / narrow viewport (1):
 
 ![Mobile view 1](screenshots/Mobile-1.png)
@@ -63,6 +67,9 @@ Mobile / narrow viewport (1):
 Mobile / narrow viewport (2):
 
 ![Mobile view 2](screenshots/Mobile-2.png)
+
+
+
 
 
 

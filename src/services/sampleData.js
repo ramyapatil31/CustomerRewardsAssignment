@@ -1,51 +1,55 @@
-// Sample dataset covering Dec 2023, Jan 2024, Feb 2024
-export default [
-  {
-    id: 't1',
-    customerId: 'c1',
-    name: 'Alice Johnson',
-    date: '2023-12-15',
-    product: 'Coffee Maker',
-    price: 120.99
-  },
-  {
-    id: 't2',
-    customerId: 'c2',
-    name: 'Bob Smith',
-    date: '2023-12-20',
-    product: 'Blender',
-    price: 75.4
-  },
-  {
-    id: 't3',
-    customerId: 'c1',
-    name: 'Alice Johnson',
-    date: '2024-01-10',
-    product: 'Toaster',
-    price: 49.99
-  },
-  {
-    id: 't4',
-    customerId: 'c3',
-    name: 'Carol Danvers',
-    date: '2024-01-20',
-    product: 'Mixer',
-    price: 200.4
-  },
-  {
-    id: 't5',
-    customerId: 'c2',
-    name: 'Bob Smith',
-    date: '2024-02-05',
-    product: 'Air Fryer',
-    price: 150.25
-  },
-  {
-    id: 't6',
-    customerId: 'c1',
-    name: 'Alice Johnson',
-    date: '2024-02-28',
-    product: 'Espresso',
-    price: 101.8
-  }
+const customers = [
+  { id: 'c1', firstName: 'Alice', lastName: 'Johnson' },
+  { id: 'c2', firstName: 'Bob', lastName: 'Smith' },
+  { id: 'c3', firstName: 'Carol', lastName: 'Danvers' },
+  { id: 'c4', firstName: 'Dan', lastName: 'Brown' },
+  { id: 'c5', firstName: 'Eve', lastName: 'Martinez' },
+  { id: 'c6', firstName: 'Frank', lastName: 'Wilson' },
+  { id: 'c7', firstName: 'Grace', lastName: 'Lee' },
+  { id: 'c8', firstName: 'Henry', lastName: 'Ng' },
+  { id: 'c9', firstName: 'Ivy', lastName: 'Chen' },
+  { id: 'c10', firstName: 'Jack', lastName: 'Garcia' }
 ];
+
+const products = ['Coffee Maker', 'Blender', 'Toaster', 'Mixer', 'Air Fryer', 'Espresso', 'Kettle', 'Grinder', 'Juicer', 'Oven'];
+
+function pad(n) {
+  return String(n).padStart(2, '0');
+}
+
+function formatMMDDYYYY(d) {
+  return `${pad(d.getMonth() + 1)}-${pad(d.getDate())}-${d.getFullYear()}`;
+}
+
+// Limit sample data to exactly three months: Apr 1, 2026 - Jun 12, 2026
+const start = new Date(2026, 3, 1); // April 1, 2026
+const end = new Date(2026, 5, 12); // June 12, 2026
+const dayMs = 24 * 60 * 60 * 1000;
+const totalDays = Math.round((end - start) / dayMs) + 1;
+
+// Create multiple transactions per day but keep total moderate (~300 records)
+const perDay = 4;
+const data = [];
+let idx = 1;
+for (let day = 0; day < totalDays; day += 1) {
+  const dayDate = new Date(start.getTime() + day * dayMs);
+  for (let k = 0; k < perDay; k += 1) {
+    const cust = customers[(day * perDay + k) % customers.length];
+    const product = products[(day * perDay + k) % products.length];
+    const priceWhole = 10 + ((day * perDay + k) * 37) % 300;
+    const priceCents = ((day * perDay + k) * 13) % 100;
+    const price = Number((priceWhole + priceCents / 100).toFixed(2));
+    data.push({
+      id: `t${idx}`,
+      customerId: cust.id,
+      firstName: cust.firstName,
+      lastName: cust.lastName,
+      date: formatMMDDYYYY(dayDate),
+      product,
+      price
+    });
+    idx += 1;
+  }
+}
+
+export default data;

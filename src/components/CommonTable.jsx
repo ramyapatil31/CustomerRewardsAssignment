@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import parse from 'date-fns/parse';
 import isValid from 'date-fns/isValid';
 import format from 'date-fns/format';
-// eslint-disable-next-line no-unused-vars
 import ErrorPopup from './ErrorPopup';
 
 function isDateStringMMDDYYYY(v) {
@@ -12,6 +11,7 @@ function isDateStringMMDDYYYY(v) {
 
 function formatCell(value, key) {
   if (value == null) return '';
+  // Format known data types for display: dates, currency, numbers, and month names.
   if (isDateStringMMDDYYYY(value)) {
     try {
       const d = parse(value, 'MM-dd-yyyy', new Date());
@@ -41,6 +41,7 @@ function formatCell(value, key) {
 }
 
 function prettifyHeader(key) {
+  // Convert camelCase or snake_case keys into human-friendly headers.
   if (!key) return '';
   let s = String(key).replace(/[_-]+/g, ' ');
   s = s.replace(/([a-z0-9])([A-Z])/g, '$1 $2');
@@ -84,6 +85,7 @@ export default function CommonTable({ data, columns, caption, showCaption = fals
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
   const current = filtered.slice((page - 1) * pageSize, page * pageSize);
 
+  // Render current page slice and provide simple pagination controls.
   return (
     <div className="table-responsive">
       {localError && (
@@ -102,7 +104,7 @@ export default function CommonTable({ data, columns, caption, showCaption = fals
         <thead>
           <tr>
             {keys.map((k) => (
-              <th key={k}>{prettifyHeader(k)}</th>
+              <th key={k} scope="col">{prettifyHeader(k)}</th>
             ))}
           </tr>
         </thead>

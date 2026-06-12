@@ -12,7 +12,6 @@ import {
   totalRewardsArray
 } from './utils/rewardCalculations';
 import LoadingSpinner from './components/LoadingSpinner';
-// eslint-disable-next-line no-unused-vars
 import ErrorPopup from './components/ErrorPopup';
 import Transactions from './components/Transactions';
 import MonthlyRewards from './components/MonthlyRewards';
@@ -31,6 +30,7 @@ export default function App() {
 
   useEffect(() => {
     let mounted = true;
+    // Fetch transactions once on mount and enrich with computed points.
     fetchTransactions()
       .then((res) => {
         if (!mounted) return;
@@ -40,12 +40,10 @@ export default function App() {
         const parsedDates = enriched.map((t) => parse(String(t.date), 'MM-dd-yyyy', new Date())).filter(Boolean);
         const latest = parsedDates.reduce((acc, d) => (acc && acc > d ? acc : d), parsedDates[0]);
         const end = endOfMonth(latest || new Date());
-        // prepopulate picker to last 90 days
         const ninetyStart = new Date(end);
         ninetyStart.setDate(ninetyStart.getDate() - 89);
         setDateFrom(format(ninetyStart, 'yyyy-MM-dd'));
         setDateTo(format(end, 'yyyy-MM-dd'));
-        // default displayed range is the past 90 days ending at most-recent month-end
         setAppliedRange({ from: ninetyStart, to: end });
         setState({ loading: false, error: null, transactions: enriched });
       })
@@ -119,17 +117,19 @@ export default function App() {
           <button
             className="btn btn--primary date-filter__button"
             onClick={() => {
-              const from = parse(dateFrom, 'yyyy-MM-dd', new Date());
-              const to = parse(dateTo, 'yyyy-MM-dd', new Date());
-              const days = differenceInCalendarDays(to, from) + 1;
-              if (days > 90) {
-                const err = new Error('Date range cannot exceed 90 days');
-                setState((s) => ({ ...s, error: err }));
-                return;
-              }
-              setState((s) => ({ ...s, error: null }));
-              setAppliedRange({ from, to });
-            }}
+                // Validate and apply the selected date range.
+                // If invalid, surface error via shared ErrorPopup.
+                const from = parse(dateFrom, 'yyyy-MM-dd', new Date());
+                const to = parse(dateTo, 'yyyy-MM-dd', new Date());
+                const days = differenceInCalendarDays(to, from) + 1;
+                if (days > 90) {
+                  const err = new Error('Date range cannot exceed 90 days');
+                  setState((s) => ({ ...s, error: err }));
+                  return;
+                }
+                setState((s) => ({ ...s, error: null }));
+                setAppliedRange({ from, to });
+              }}
           >
             Apply
           </button>

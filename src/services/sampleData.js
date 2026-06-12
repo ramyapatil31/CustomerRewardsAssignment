@@ -21,7 +21,7 @@ function formatMMDDYYYY(d) {
   return `${pad(d.getMonth() + 1)}-${pad(d.getDate())}-${d.getFullYear()}`;
 }
 
-// Limit sample data to exactly three months: Apr 1, 2026 - Jun 12, 2026
+// Dates are formatted as MM-DD-YYYY to match parsing in the app.
 const start = new Date(2026, 3, 1); // April 1, 2026
 const end = new Date(2026, 5, 12); // June 12, 2026
 const dayMs = 24 * 60 * 60 * 1000;

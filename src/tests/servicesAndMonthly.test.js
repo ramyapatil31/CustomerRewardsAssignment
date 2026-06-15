@@ -1,6 +1,10 @@
 import { fetchTransactions } from '../services/api';
 import sampleData from '../services/sampleData';
 import { monthlyRewardsArray } from '../utils/rewardCalculations';
+import parse from 'date-fns/parse';
+import isValid from 'date-fns/isValid';
+import differenceInCalendarDays from 'date-fns/differenceInCalendarDays';
+import startOfDay from 'date-fns/startOfDay';
 
 test('fetchTransactions resolves with ok and data array', async () => {
   const res = await fetchTransactions();
@@ -17,12 +21,20 @@ test('fetchTransactions resolves with ok and data array', async () => {
   expect(typeof first.price).toBe('number');
 });
 
-test('sampleData contains start and end dates for three-month window', () => {
-  // ensure earliest and latest expected dates exist
-  const hasStart = sampleData.some((t) => t.date === '04-01-2026');
-  const hasEnd = sampleData.some((t) => t.date === '06-12-2026');
-  expect(hasStart).toBe(true);
-  expect(hasEnd).toBe(true);
+test('sampleData contains dates within a recent ~3-month window', () => {
+  const parsed = sampleData
+    .map((t) => parse(t.date, 'MM-dd-yyyy', new Date()))
+    .filter((d) => isValid(d));
+  expect(parsed.length).toBeGreaterThan(0);
+  const times = parsed.map((d) => d.getTime());
+  const min = new Date(Math.min(...times));
+  const max = new Date(Math.max(...times));
+  // max should not be far in the future (allow one-day tolerance for generation/timezone differences)
+  const todayStart = startOfDay(new Date());
+  expect(differenceInCalendarDays(max, todayStart)).toBeLessThanOrEqual(1);
+  // window should be at most 90 days
+  const days = differenceInCalendarDays(max, min) + 1;
+  expect(days).toBeLessThanOrEqual(90);
 });
 
 test('monthlyRewardsArray orders rows by year+month ascending', () => {

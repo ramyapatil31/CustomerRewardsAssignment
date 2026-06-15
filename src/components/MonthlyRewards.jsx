@@ -1,11 +1,17 @@
 import PropTypes from 'prop-types';
 import CommonTable from './CommonTable';
+import format from 'date-fns/format';
 
-void CommonTable;
-
-export default function MonthlyRewards({ rows }) {
+export default function MonthlyRewards({ rows, range }) {
   const columns = ['customerId', 'name', 'month', 'year', 'points'];
-  return <CommonTable data={rows} columns={columns} caption="Monthly Rewards" />;
+  return (
+    <div>
+      {range && range.from && range.to && (
+        <div className="range-note">Showing {format(range.from, 'yyyy-MM-dd')} — {format(range.to, 'yyyy-MM-dd')}</div>
+      )}
+      <CommonTable data={rows} columns={columns} caption="Monthly Rewards" />
+    </div>
+  );
 }
 
 MonthlyRewards.propTypes = {
@@ -17,5 +23,9 @@ MonthlyRewards.propTypes = {
       year: PropTypes.string,
       points: PropTypes.number
     })
-  ).isRequired
+  ).isRequired,
+  range: PropTypes.shape({
+    from: PropTypes.instanceOf(Date),
+    to: PropTypes.instanceOf(Date)
+  })
 };

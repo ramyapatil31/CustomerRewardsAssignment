@@ -1,8 +1,6 @@
 import PropTypes from 'prop-types';
 import CommonTable from './CommonTable';
 
-void CommonTable;
-
 export default function Transactions({ items }) {
   const columns = ['id', 'firstName', 'lastName', 'date', 'product', 'price', 'points'];
   return <CommonTable data={items} columns={columns} caption="Transactions" />;

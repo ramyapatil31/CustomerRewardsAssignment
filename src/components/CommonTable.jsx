@@ -1,9 +1,8 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import parse from 'date-fns/parse';
 import isValid from 'date-fns/isValid';
 import format from 'date-fns/format';
-import ErrorPopup from './ErrorPopup';
 
 function isDateStringMMDDYYYY(v) {
   return typeof v === 'string' && /^\d{2}-\d{2}-\d{4}$/.test(v);
@@ -52,35 +51,16 @@ function prettifyHeader(key) {
 }
 
 export default function CommonTable({ data, columns, caption, showCaption = false, pageSize = 10 }) {
+  // Hooks must be called unconditionally to satisfy React's Rules of Hooks.
+  const [page, setPage] = useState(1);
+
+  const filtered = Array.isArray(data) ? data : [];
+
   if (!Array.isArray(data) || data.length === 0) {
     return <div>No data</div>;
   }
 
   const keys = columns && columns.length ? columns : Object.keys(data[0]);
-
-  const [page, setPage] = useState(1);
-
-    function matchesQuery() {
-      return true;
-    }
-
-    const { filtered, filterError } = useMemo(() => {
-      let _error = null;
-      const f = data.filter((r) => {
-        try {
-          return matchesQuery(r);
-        } catch (e) {
-          _error = e;
-          return false;
-        }
-      });
-      return { filtered: f, filterError: _error };
-    }, [data]);
-
-    const [localError, setLocalError] = useState(null);
-    useEffect(() => {
-      if (filterError) setLocalError(filterError);
-    }, [filterError]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
   const current = filtered.slice((page - 1) * pageSize, page * pageSize);
@@ -88,9 +68,7 @@ export default function CommonTable({ data, columns, caption, showCaption = fals
   // Render current page slice and provide simple pagination controls.
   return (
     <div className="table-responsive">
-      {localError && (
-        <ErrorPopup message={localError} onClose={() => setLocalError(null)} />
-      )}
+      {/* no client-side filter implemented; `filtered` equals `data` */}
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 8 }}>
         <div style={{ alignSelf: 'center' }}>
           <small>{filtered.length} rows</small>
@@ -147,5 +125,6 @@ CommonTable.propTypes = {
   data: PropTypes.array.isRequired,
   columns: PropTypes.array,
   caption: PropTypes.string,
-  showCaption: PropTypes.bool
+  showCaption: PropTypes.bool,
+  pageSize: PropTypes.number
 };

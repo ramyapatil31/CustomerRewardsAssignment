@@ -23,9 +23,9 @@ function formatMMDDYYYY(d) {
 
 // Dates are formatted as MM-DD-YYYY to match parsing in the app.
 const start = new Date(2026, 3, 1); // April 1, 2026
-const end = new Date(2026, 5, 12); // June 12, 2026
+const end = new Date(); // dynamic end date (current date)
 const dayMs = 24 * 60 * 60 * 1000;
-const totalDays = Math.round((end - start) / dayMs) + 1;
+const totalDays = Math.max(1, Math.round((end - start) / dayMs) + 1);
 
 // Create multiple transactions per day but keep total moderate (~300 records)
 const perDay = 4;

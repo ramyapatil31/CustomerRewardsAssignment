@@ -1,4 +1,5 @@
 import parse from 'date-fns/parse';
+import isValid from 'date-fns/isValid';
 
 // Utility: round down decimal price values to integer dollars
 function floorToInt(value) {
@@ -31,6 +32,7 @@ export function enrichTransactionsWithPoints(transactions) {
 export function groupByCustomerAndMonth(transactions) {
   return transactions.reduce((acc, t) => {
     const date = parse(String(t.date), 'MM-dd-yyyy', new Date());
+    if (!isValid(date)) return acc;
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const key = `${year}-${month}`;

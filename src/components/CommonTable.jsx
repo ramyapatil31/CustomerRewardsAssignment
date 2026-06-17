@@ -57,7 +57,7 @@ export default function CommonTable({ data, columns, caption, showCaption = fals
   const filtered = Array.isArray(data) ? data : [];
 
   if (!Array.isArray(data) || data.length === 0) {
-    return <div>No data</div>;
+    return <div role="status">No data</div>;
   }
 
   const keys = columns && columns.length ? columns : Object.keys(data[0]);
@@ -71,7 +71,7 @@ export default function CommonTable({ data, columns, caption, showCaption = fals
       {/* no client-side filter implemented; `filtered` equals `data` */}
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 8 }}>
         <div style={{ alignSelf: 'center' }}>
-          <small>{filtered.length} rows</small>
+          <small aria-live="polite">{filtered.length} rows</small>
         </div>
       </div>
 
@@ -100,23 +100,42 @@ export default function CommonTable({ data, columns, caption, showCaption = fals
         </tbody>
       </table>
 
-      <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: 8 }}>
-        <button onClick={() => setPage(1)} disabled={page === 1}>
+      <nav
+        aria-label={`${caption || 'Table'} pagination`}
+        style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: 8 }}
+      >
+        <button
+          aria-label="Go to first page"
+          onClick={() => setPage(1)}
+          disabled={page === 1}
+        >
           {'<<'}
         </button>
-        <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1}>
+        <button
+          aria-label="Go to previous page"
+          onClick={() => setPage((p) => Math.max(1, p - 1))}
+          disabled={page === 1}
+        >
           {'<'}
         </button>
-        <span style={{ alignSelf: 'center' }}>
+        <span aria-live="polite" style={{ alignSelf: 'center' }}>
           Page {page} / {totalPages}
         </span>
-        <button onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page === totalPages}>
+        <button
+          aria-label="Go to next page"
+          onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+          disabled={page === totalPages}
+        >
           {'>'}
         </button>
-        <button onClick={() => setPage(totalPages)} disabled={page === totalPages}>
+        <button
+          aria-label="Go to last page"
+          onClick={() => setPage(totalPages)}
+          disabled={page === totalPages}
+        >
           {'>>'}
         </button>
-      </div>
+      </nav>
     </div>
   );
 }

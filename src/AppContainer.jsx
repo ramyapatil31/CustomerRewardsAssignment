@@ -96,7 +96,7 @@ export default function AppContainer() {
         <h1>Rewards Summary</h1>
       </div>
 
-          <div className="date-filter" role="region" aria-label="Transaction date filter">
+      <div className="date-filter" role="region" aria-label="Transaction date filter">
         <div className="date-filter__row">
           <label className="date-filter__label">
             From
@@ -130,6 +130,7 @@ export default function AppContainer() {
 
           <button
             className="btn btn--primary date-filter__button"
+            aria-label="Apply transaction date filter"
             onClick={() => {
                 const v = validateDateStrings(dateFrom, dateTo);
                 if (!v.valid) {
@@ -143,17 +144,22 @@ export default function AppContainer() {
             Apply
           </button>
         </div>
-        </div>
+      </div>
 
-        <h2>Monthly Rewards</h2>
+      <section aria-labelledby="monthly-rewards-heading">
+        <h2 id="monthly-rewards-heading">Monthly Rewards</h2>
         <MonthlyRewards rows={monthly} range={appliedRange} />
+      </section>
 
-        <h2>Total Rewards</h2>
+      <section aria-labelledby="total-rewards-heading">
+        <h2 id="total-rewards-heading">Total Rewards</h2>
         <TotalRewards totals={totals} range={appliedRange} />
+      </section>
 
-        <h2>Transactions</h2>
-
+      <section aria-labelledby="transactions-heading">
+        <h2 id="transactions-heading">Transactions</h2>
         <Transactions items={sortedTransactions} />
+      </section>
     </div>
   );
 }
